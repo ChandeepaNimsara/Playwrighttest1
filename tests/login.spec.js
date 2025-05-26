@@ -58,7 +58,10 @@ test.describe("Login Test Cases", () => {
       await page.getByPlaceholder("Password").fill("WrongPass");
       await page.waitForTimeout(2000);
       await page.locator("button[type='submit']").click();
-      await expect(page.locator(".oxd-alert-content-text")).toHaveText("Invalid credentials");
+
+      const alert = page.locator(".oxd-alert-content-text");
+      await expect(alert).toBeVisible({ timeout: 10000 }); // wait up to 10s
+      await expect(alert).toHaveText("Invalid credentials");
     });
   });
 
@@ -68,7 +71,10 @@ test.describe("Login Test Cases", () => {
       await page.getByPlaceholder("Password").fill("admin123");
       await page.waitForTimeout(2000);
       await page.locator("button[type='submit']").click();
-      await expect(page.locator(".oxd-alert-content-text")).toHaveText("Invalid credentials");
+
+      const alert = page.locator(".oxd-alert-content-text");
+      await expect(alert).toBeVisible({ timeout: 10000 }); // wait up to 10s
+      await expect(alert).toHaveText("Invalid credentials");
     });
   });
 
@@ -76,8 +82,21 @@ test.describe("Login Test Cases", () => {
     await runTest(async (page) => {
       await page.waitForTimeout(2000);
       await page.locator("button[type='submit']").click();
-      await expect(page.locator(".oxd-input-field-error-message")).toHaveCount(2);
+  
+      const alerts = page.locator(".oxd-input-field-error-message");
+  
+      // First check the number of validation messages
+      await expect(alerts).toHaveCount(2);
+  
+      // Check each one individually
+      await expect(alerts.nth(0)).toBeVisible();
+      await expect(alerts.nth(1)).toBeVisible();
+  
+      // Optional: check if both have text 'Required'
+      await expect(alerts.nth(0)).toHaveText("Required");
+      await expect(alerts.nth(1)).toHaveText("Required");
     });
   });
+  
 
 });
