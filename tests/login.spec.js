@@ -7,7 +7,6 @@ async function runTest(testLogic) {
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 }
   });
-
   const page = await context.newPage();
 
   // Log browser console output
@@ -21,7 +20,6 @@ async function runTest(testLogic) {
 
   // Run actual test logic
   await testLogic(page);
-
   await browser.close();
 }
 
@@ -48,7 +46,11 @@ test.describe("Login Test Cases", () => {
       await page.getByPlaceholder("Password").fill("admin");
       await page.waitForTimeout(2000);
       await page.locator("button[type='submit']").click();
-      await expect(page.locator(".oxd-alert-content-text")).toBeVisible();
+
+      const alert = page.locator(".oxd-alert-content-text");
+      await expect(alert).toBeVisible({ timeout: 10000 }); // wait up to 10s
+      await expect(alert).toHaveText("Invalid credentials");
+      await page.waitForTimeout(1000);
     });
   });
 
@@ -62,6 +64,7 @@ test.describe("Login Test Cases", () => {
       const alert = page.locator(".oxd-alert-content-text");
       await expect(alert).toBeVisible({ timeout: 10000 }); // wait up to 10s
       await expect(alert).toHaveText("Invalid credentials");
+      await page.waitForTimeout(1000);
     });
   });
 
@@ -75,6 +78,7 @@ test.describe("Login Test Cases", () => {
       const alert = page.locator(".oxd-alert-content-text");
       await expect(alert).toBeVisible({ timeout: 10000 }); // wait up to 10s
       await expect(alert).toHaveText("Invalid credentials");
+      await page.waitForTimeout(1000);
     });
   });
 
@@ -82,6 +86,7 @@ test.describe("Login Test Cases", () => {
     await runTest(async (page) => {
       await page.waitForTimeout(2000);
       await page.locator("button[type='submit']").click();
+      await page.waitForTimeout(1000);
   
       const alerts = page.locator(".oxd-input-field-error-message");
   
