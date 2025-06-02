@@ -2,10 +2,13 @@ const { test, expect, chromium } = require("@playwright/test");
 
 // Common test wrapper
 async function runTest(testLogic) {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ 
+    headless: false,
+    //args: ['--start-maximized'] // Maximize the windo
+   });
 
   const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 }
+    viewport: { width: 1810, height: 1080 }
   });
   const page = await context.newPage();
 
